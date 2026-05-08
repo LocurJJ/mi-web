@@ -2,39 +2,286 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Mi primera web</title>
+  <title>Panadería Josué Finanzas</title>
 
   <style>
     body{
       font-family: Arial;
+      margin:0;
+      background:#f4f4f4;
+    }
+
+    header{
       text-align:center;
-      margin-top:100px;
-      background:#f2f2f2;
+      padding:25px;
+      background:white;
+    }
+
+    h1{
+      margin:0;
+    }
+
+    .saldo{
+      background:#b7f000;
+      padding:20px;
+      font-size:28px;
+      font-weight:bold;
+      cursor:pointer;
+      text-align:center;
+    }
+
+    .botones{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:10px;
+      padding:15px;
     }
 
     button{
-      padding:15px 30px;
-      font-size:20px;
+      padding:20px;
+      font-size:18px;
       border:none;
-      border-radius:10px;
       cursor:pointer;
+      border-radius:8px;
+    }
+
+    .central{ background:#7fa0c8; }
+    .sucursal{ background:yellow; }
+    .reparto{ background:pink; }
+    .gastos{ background:red; color:white; }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      background:white;
+      margin-top:20px;
+    }
+
+    th, td{
+      border:1px solid #ccc;
+      padding:10px;
+      text-align:center;
+    }
+
+    th{
+      background:#b7f000;
+    }
+
+    .acciones{
+      padding:15px;
+      text-align:center;
     }
   </style>
 </head>
 
 <body>
 
-  <h1>Hola 👋</h1>
-  <p>Esta es mi primera app web subida a internet</p>
+  <header>
+    <h1>Panadería Josué</h1>
+    <h2>Finanzas</h2>
+  </header>
 
-  <button onclick="saludar()">
-    Tocar botón
-  </button>
+  <div class="saldo" onclick="modificarSaldo()">
+    Plata actual: $<span id="saldoActual">0</span>
+  </div>
+
+  <div class="botones">
+    <button class="central" onclick="agregarIngreso('Central')">Ingreso Central</button>
+    <button class="sucursal" onclick="agregarIngreso('Sucursal')">Ingreso Sucursal</button>
+    <button class="reparto" onclick="agregarIngreso('Reparto')">Ingreso Reparto</button>
+    <button class="gastos" onclick="agregarGasto()">Gastos</button>
+  </div>
+
+  <div class="acciones">
+    <button onclick="descargarExcel()">Descargar Excel</button>
+    <button onclick="borrarTodo()">Borrar todo</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Día</th>
+        <th>Central</th>
+        <th>Sucursal</th>
+        <th>Reparto</th>
+        <th>Gastos</th>
+        <th>Balance del día</th>
+        <th>Comentario</th>
+      </tr>
+    </thead>
+    <tbody id="tabla"></tbody>
+  </table>
 
   <script>
-    function saludar(){
-      alert("¡Funciona!");
+    let movimientos = JSON.parse(localStorage.getItem("movimientos")) || [];
+    let saldo = Number(localStorage.getItem("saldo")) || 0;
+
+    function guardarDatos(){
+      localStorage.setItem("movimientos", JSON.stringify(movimientos));
+      localStorage.setItem("saldo", saldo);
     }
+
+    function agregarIngreso(tipo){
+      let dia = prompt("Ingrese el día. Ejemplo: 08/05/2026");
+      let turno = prompt("Ingrese el turno. Ejemplo: mañana o tarde");
+      let monto = Number(prompt("Ingrese el monto"));
+
+      if(!dia || !monto){
+        alert("Faltan datos");
+        return;
+      }
+
+      movimientos.push({
+        dia: dia,
+        tipo: tipo,
+        categoria: "Ingreso",
+        monto: monto,
+        comentario: "Turno: " + turno
+      });
+
+      saldo += monto;
+      guardarDatos();
+      mostrarDatos();
+    }
+
+    function agregarGasto(){
+      let dia = prompt("Ingrese el día. Ejemplo: 08/05/2026");
+
+      let categoria = prompt(
+        "Seleccione categoría:\n" +
+        "1 Sueldos\n" +
+        "2 Gastos operativos\n" +
+        "3 Gastos mercadería\n" +
+        "4 Gastos servicios\n" +
+        "5 Gastos administrativos\n" +
+        "6 Otros"
+      );
+
+      let categorias = {
+        1: "Sueldos",
+        2: "Gastos operativos",
+        3: "Gastos mercadería",
+        4: "Gastos servicios",
+        5: "Gastos administrativos",
+        6: "Otros"
+      };
+
+      let monto = Number(prompt("Ingrese el monto"));
+      let comentario = prompt("Comentario. Ejemplo: Gisela");
+
+      if(!dia || !monto){
+        alert("Faltan datos");
+        return;
+      }
+
+      movimientos.push({
+        dia: dia,
+        tipo: "Gasto",
+        categoria: categorias[categoria] || "Otros",
+        monto: monto,
+        comentario: comentario
+      });
+
+      saldo -= monto;
+      guardarDatos();
+      mostrarDatos();
+    }
+
+    function modificarSaldo(){
+      let nuevoSaldo = Number(prompt("Ingrese la plata actual"));
+
+      if(!nuevoSaldo && nuevoSaldo !== 0){
+        alert("Monto inválido");
+        return;
+      }
+
+      let dia = prompt("Ingrese el día de modificación");
+
+      movimientos.push({
+        dia: dia,
+        tipo: "Modificación de saldo",
+        categoria: "Saldo manual",
+        monto: nuevoSaldo,
+        comentario: "Saldo modificado manualmente"
+      });
+
+      saldo = nuevoSaldo;
+      guardarDatos();
+      mostrarDatos();
+    }
+
+    function mostrarDatos(){
+      document.getElementById("saldoActual").innerText = saldo.toLocaleString("es-AR");
+
+      let resumen = {};
+
+      movimientos.forEach(mov => {
+        if(!resumen[mov.dia]){
+          resumen[mov.dia] = {
+            central: 0,
+            sucursal: 0,
+            reparto: 0,
+            gastos: 0,
+            comentarios: []
+          };
+        }
+
+        if(mov.tipo === "Central") resumen[mov.dia].central += mov.monto;
+        if(mov.tipo === "Sucursal") resumen[mov.dia].sucursal += mov.monto;
+        if(mov.tipo === "Reparto") resumen[mov.dia].reparto += mov.monto;
+        if(mov.tipo === "Gasto") resumen[mov.dia].gastos += mov.monto;
+
+        resumen[mov.dia].comentarios.push(mov.categoria + ": " + mov.comentario);
+      });
+
+      let tabla = document.getElementById("tabla");
+      tabla.innerHTML = "";
+
+      Object.keys(resumen).forEach(dia => {
+        let r = resumen[dia];
+        let balance = r.central + r.sucursal + r.reparto - r.gastos;
+
+        tabla.innerHTML += `
+          <tr>
+            <td>${dia}</td>
+            <td>$${r.central.toLocaleString("es-AR")}</td>
+            <td>$${r.sucursal.toLocaleString("es-AR")}</td>
+            <td>$${r.reparto.toLocaleString("es-AR")}</td>
+            <td>$${r.gastos.toLocaleString("es-AR")}</td>
+            <td>$${balance.toLocaleString("es-AR")}</td>
+            <td>${r.comentarios.join("<br>")}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function descargarExcel(){
+      let csv = "Dia,Tipo,Categoria,Monto,Comentario\n";
+
+      movimientos.forEach(mov => {
+        csv += `${mov.dia},${mov.tipo},${mov.categoria},${mov.monto},${mov.comentario}\n`;
+      });
+
+      let archivo = new Blob([csv], { type: "text/csv" });
+      let url = URL.createObjectURL(archivo);
+
+      let link = document.createElement("a");
+      link.href = url;
+      link.download = "finanzas-panaderia.csv";
+      link.click();
+    }
+
+    function borrarTodo(){
+      let confirmar = confirm("¿Seguro que querés borrar todo?");
+      if(confirmar){
+        movimientos = [];
+        saldo = 0;
+        guardarDatos();
+        mostrarDatos();
+      }
+    }
+
+    mostrarDatos();
   </script>
 
 </body>
