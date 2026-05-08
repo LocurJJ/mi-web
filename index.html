@@ -113,7 +113,7 @@
 </header>
 
 <div class="saldo" onclick="abrirPantalla('saldo')">
-  Plata actual: $<span id="saldoActual">0</span>
+  Caja actual: $<span id="saldoActual">0</span>
 </div>
 
 <div class="menu">
@@ -150,6 +150,32 @@
 </div>
 
 <div id="pantallaGasto" class="pantalla">
+  <h2>Nuevo gasto</h2>
+
+  <label>Día</label><br>
+  <input type="date" id="diaGasto"><br>
+
+  <h3>Tipo de gasto</h3>
+  <select id="categoriaGasto" onchange="actualizarOpcionesGasto()">
+    <option>Sueldos</option>
+    <option>Gastos mercadería</option>
+    <option>Gastos operativos</option>
+    <option>Gastos servicios</option>
+    <option>Gastos administrativos</option>
+    <option>Otros</option>
+  </select>
+
+  <h3>Detalle</h3>
+  <select id="detalleGasto"></select>
+
+  <h3>Monto</h3>
+  <input type="number" id="montoGasto" placeholder="Ej: 180000"><br>
+
+  <h3>Comentario opcional</h3>
+  <input type="text" id="comentarioGasto" placeholder="Ej: adelanto, pago completo"><br>
+
+  <button class="verde" onclick="guardarGasto()">Guardar gasto</button>
+</div>
   <h2>Nuevo gasto</h2>
 
   <label>Día</label><br>
@@ -242,7 +268,7 @@
     if(nombre === "gasto"){
       document.getElementById("pantallaGasto").style.display = "block";
       document.getElementById("diaGasto").value = hoy();
-      mostrarEmpleados();
+      actualizarOpcionesGasto();
     }
 
     if(nombre === "saldo"){
@@ -306,29 +332,60 @@
     document.getElementById("montoIngreso").value = "";
   }
 
-  function mostrarEmpleados(){
-    let categoria = document.getElementById("categoriaGasto").value;
+function actualizarOpcionesGasto(){
+  let categoria = document.getElementById("categoriaGasto").value;
+  let detalle = document.getElementById("detalleGasto");
 
-    if(categoria === "Sueldos"){
-      document.getElementById("zonaEmpleados").style.display = "block";
-    } else {
-      document.getElementById("zonaEmpleados").style.display = "none";
-    }
+  let opciones = [];
+
+  if(categoria === "Sueldos"){
+    opciones = [
+      "Gera", "Mauro", "Ulices", "Ramiro", "Rocio", "Luicho",
+      "Martincho", "Faby", "Flavia", "Oriana", "Alejandra",
+      "Agustina", "Gisela", "Kiara", "Veronica", "Josue", "Otro"
+    ];
   }
+
+  if(categoria === "Gastos mercadería"){
+    opciones = ["Gastos mercadería"];
+  }
+
+  if(categoria === "Gastos operativos"){
+    opciones = [
+      "Huevos", "Harinas", "Fabio", "Churros", "Calsa",
+      "Pastas", "Bolsas", "Grasas", "Serenisima"
+    ];
+  }
+
+  if(categoria === "Gastos servicios"){
+    opciones = ["Gas", "Luz", "Internet", "Agua", "Limpieza"];
+  }
+
+  if(categoria === "Gastos administrativos"){
+    opciones = ["Contadora", "Impuestos", "Obra social"];
+  }
+
+  if(categoria === "Otros"){
+    opciones = ["Otro"];
+  }
+
+  detalle.innerHTML = "";
+
+  opciones.forEach(opcion => {
+    detalle.innerHTML += `<option>${opcion}</option>`;
+  });
+}
 
   function guardarGasto(){
     let dia = document.getElementById("diaGasto").value;
     let categoria = document.getElementById("categoriaGasto").value;
     let monto = Number(document.getElementById("montoGasto").value);
     let comentario = document.getElementById("comentarioGasto").value;
+let detalle = document.getElementById("detalleGasto").value;
 
-    let detalle = "";
-
-    if(categoria === "Sueldos"){
-      detalle = document.getElementById("empleadoGasto").value;
-    } else {
-      detalle = comentario || categoria;
-    }
+if(comentario){
+  detalle = detalle + " - " + comentario;
+}
 
     if(!dia || !monto){
       alert("Falta día o monto");
