@@ -17,10 +17,6 @@
       background:white;
     }
 
-    h1{
-      margin:0;
-    }
-
     .saldo{
       background:#b7f000;
       padding:20px;
@@ -30,7 +26,7 @@
       text-align:center;
     }
 
-    .botones{
+    .menu{
       display:grid;
       grid-template-columns: repeat(4, 1fr);
       gap:10px;
@@ -38,17 +34,57 @@
     }
 
     button{
-      padding:20px;
+      padding:18px;
       font-size:18px;
       border:none;
-      cursor:pointer;
       border-radius:8px;
+      cursor:pointer;
     }
 
     .central{ background:#7fa0c8; }
     .sucursal{ background:yellow; }
     .reparto{ background:pink; }
     .gastos{ background:red; color:white; }
+    .verde{ background:#b7f000; }
+
+    .pantalla{
+      display:none;
+      background:white;
+      padding:20px;
+      margin:15px;
+      border-radius:10px;
+    }
+
+    input, select{
+      padding:15px;
+      font-size:18px;
+      margin:8px;
+      width:250px;
+    }
+
+    .opciones button{
+      margin:5px;
+      background:#ddd;
+    }
+
+    .seleccionado{
+      outline:4px solid black;
+    }
+
+    .resumen{
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap:10px;
+      padding:15px;
+    }
+
+    .card{
+      background:white;
+      padding:15px;
+      text-align:center;
+      border-radius:8px;
+      font-weight:bold;
+    }
 
     table{
       width:100%;
@@ -66,223 +102,347 @@
     th{
       background:#b7f000;
     }
-
-    .acciones{
-      padding:15px;
-      text-align:center;
-    }
   </style>
 </head>
 
 <body>
 
-  <header>
-    <h1>Panadería Josué</h1>
-    <h2>Finanzas</h2>
-  </header>
+<header>
+  <h1>Panadería Josué</h1>
+  <h2>Finanzas</h2>
+</header>
 
-  <div class="saldo" onclick="modificarSaldo()">
-    Plata actual: $<span id="saldoActual">0</span>
+<div class="saldo" onclick="abrirPantalla('saldo')">
+  Plata actual: $<span id="saldoActual">0</span>
+</div>
+
+<div class="menu">
+  <button class="central" onclick="abrirIngreso('Central')">Ingreso Central</button>
+  <button class="sucursal" onclick="abrirIngreso('Sucursal')">Ingreso Sucursal</button>
+  <button class="reparto" onclick="abrirIngreso('Reparto')">Ingreso Reparto</button>
+  <button class="gastos" onclick="abrirPantalla('gasto')">Gastos</button>
+</div>
+
+<div class="resumen">
+  <div class="card">Central<br>$<span id="totalCentral">0</span></div>
+  <div class="card">Sucursal<br>$<span id="totalSucursal">0</span></div>
+  <div class="card">Reparto<br>$<span id="totalReparto">0</span></div>
+  <div class="card">Gastos<br>$<span id="totalGastos">0</span></div>
+  <div class="card">Balance<br>$<span id="totalBalance">0</span></div>
+</div>
+
+<div id="pantallaIngreso" class="pantalla">
+  <h2 id="tituloIngreso">Ingreso</h2>
+
+  <label>Día</label><br>
+  <input type="date" id="diaIngreso"><br>
+
+  <h3>Turno</h3>
+  <div class="opciones">
+    <button id="turnoManana" onclick="seleccionarTurno('mañana')">Mañana</button>
+    <button id="turnoTarde" onclick="seleccionarTurno('tarde')">Tarde</button>
   </div>
 
-  <div class="botones">
-    <button class="central" onclick="agregarIngreso('Central')">Ingreso Central</button>
-    <button class="sucursal" onclick="agregarIngreso('Sucursal')">Ingreso Sucursal</button>
-    <button class="reparto" onclick="agregarIngreso('Reparto')">Ingreso Reparto</button>
-    <button class="gastos" onclick="agregarGasto()">Gastos</button>
+  <h3>Monto</h3>
+  <input type="number" id="montoIngreso" placeholder="Ej: 1500000"><br>
+
+  <button class="verde" onclick="guardarIngreso()">Guardar ingreso</button>
+</div>
+
+<div id="pantallaGasto" class="pantalla">
+  <h2>Nuevo gasto</h2>
+
+  <label>Día</label><br>
+  <input type="date" id="diaGasto"><br>
+
+  <h3>Categoría</h3>
+  <select id="categoriaGasto" onchange="mostrarEmpleados()">
+    <option>Sueldos</option>
+    <option>Gastos operativos</option>
+    <option>Gastos mercadería</option>
+    <option>Gastos servicios</option>
+    <option>Gastos administrativos</option>
+    <option>Otros</option>
+  </select>
+
+  <div id="zonaEmpleados">
+    <h3>Empleado</h3>
+    <select id="empleadoGasto">
+      <option>Gisela</option>
+      <option>Alejandra</option>
+      <option>Kiara</option>
+      <option>Agustina</option>
+    </select>
   </div>
 
-  <div class="acciones">
-    <button onclick="descargarExcel()">Descargar Excel</button>
-    <button onclick="borrarTodo()">Borrar todo</button>
-  </div>
+  <h3>Monto</h3>
+  <input type="number" id="montoGasto" placeholder="Ej: 180000"><br>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Día</th>
-        <th>Central</th>
-        <th>Sucursal</th>
-        <th>Reparto</th>
-        <th>Gastos</th>
-        <th>Balance del día</th>
-        <th>Comentario</th>
-      </tr>
-    </thead>
-    <tbody id="tabla"></tbody>
-  </table>
+  <h3>Comentario opcional</h3>
+  <input type="text" id="comentarioGasto" placeholder="Ej: adelanto, pago completo"><br>
 
-  <script>
-    let movimientos = JSON.parse(localStorage.getItem("movimientos")) || [];
-    let saldo = Number(localStorage.getItem("saldo")) || 0;
+  <button class="verde" onclick="guardarGasto()">Guardar gasto</button>
+</div>
 
-    function guardarDatos(){
-      localStorage.setItem("movimientos", JSON.stringify(movimientos));
-      localStorage.setItem("saldo", saldo);
+<div id="pantallaSaldo" class="pantalla">
+  <h2>Modificar plata actual</h2>
+
+  <label>Día</label><br>
+  <input type="date" id="diaSaldo"><br>
+
+  <h3>Nuevo saldo</h3>
+  <input type="number" id="nuevoSaldo" placeholder="Ej: 2500000"><br>
+
+  <button class="verde" onclick="guardarSaldo()">Guardar saldo</button>
+</div>
+
+<div style="text-align:center; padding:15px;">
+  <button onclick="descargarExcel()">Descargar Excel</button>
+  <button onclick="borrarTodo()">Borrar todo</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Día</th>
+      <th>Movimiento</th>
+      <th>Categoría</th>
+      <th>Detalle</th>
+      <th>Turno</th>
+      <th>Monto</th>
+      <th>Saldo luego</th>
+    </tr>
+  </thead>
+  <tbody id="tabla"></tbody>
+</table>
+
+<script>
+  let movimientos = JSON.parse(localStorage.getItem("movimientos")) || [];
+  let saldo = Number(localStorage.getItem("saldo")) || 0;
+
+  let ingresoActual = "";
+  let turnoActual = "";
+
+  function formato(num){
+    return Number(num).toLocaleString("es-AR");
+  }
+
+  function hoy(){
+    return new Date().toISOString().split("T")[0];
+  }
+
+  function guardarDatos(){
+    localStorage.setItem("movimientos", JSON.stringify(movimientos));
+    localStorage.setItem("saldo", saldo);
+  }
+
+  function abrirPantalla(nombre){
+    document.querySelectorAll(".pantalla").forEach(p => p.style.display = "none");
+
+    if(nombre === "gasto"){
+      document.getElementById("pantallaGasto").style.display = "block";
+      document.getElementById("diaGasto").value = hoy();
+      mostrarEmpleados();
     }
 
-    function agregarIngreso(tipo){
-      let dia = prompt("Ingrese el día. Ejemplo: 08/05/2026");
-      let turno = prompt("Ingrese el turno. Ejemplo: mañana o tarde");
-      let monto = Number(prompt("Ingrese el monto"));
+    if(nombre === "saldo"){
+      document.getElementById("pantallaSaldo").style.display = "block";
+      document.getElementById("diaSaldo").value = hoy();
+    }
+  }
 
-      if(!dia || !monto){
-        alert("Faltan datos");
-        return;
-      }
+  function abrirIngreso(tipo){
+    ingresoActual = tipo;
+    turnoActual = "";
 
-      movimientos.push({
-        dia: dia,
-        tipo: tipo,
-        categoria: "Ingreso",
-        monto: monto,
-        comentario: "Turno: " + turno
-      });
+    document.querySelectorAll(".pantalla").forEach(p => p.style.display = "none");
 
-      saldo += monto;
-      guardarDatos();
-      mostrarDatos();
+    document.getElementById("pantallaIngreso").style.display = "block";
+    document.getElementById("tituloIngreso").innerText = "Ingreso " + tipo;
+    document.getElementById("diaIngreso").value = hoy();
+    document.getElementById("montoIngreso").value = "";
+
+    document.getElementById("turnoManana").classList.remove("seleccionado");
+    document.getElementById("turnoTarde").classList.remove("seleccionado");
+  }
+
+  function seleccionarTurno(turno){
+    turnoActual = turno;
+
+    document.getElementById("turnoManana").classList.remove("seleccionado");
+    document.getElementById("turnoTarde").classList.remove("seleccionado");
+
+    if(turno === "mañana"){
+      document.getElementById("turnoManana").classList.add("seleccionado");
+    } else {
+      document.getElementById("turnoTarde").classList.add("seleccionado");
+    }
+  }
+
+  function guardarIngreso(){
+    let dia = document.getElementById("diaIngreso").value;
+    let monto = Number(document.getElementById("montoIngreso").value);
+
+    if(!dia || !turnoActual || !monto){
+      alert("Falta día, turno o monto");
+      return;
     }
 
-    function agregarGasto(){
-      let dia = prompt("Ingrese el día. Ejemplo: 08/05/2026");
+    saldo += monto;
 
-      let categoria = prompt(
-        "Seleccione categoría:\n" +
-        "1 Sueldos\n" +
-        "2 Gastos operativos\n" +
-        "3 Gastos mercadería\n" +
-        "4 Gastos servicios\n" +
-        "5 Gastos administrativos\n" +
-        "6 Otros"
-      );
+    movimientos.push({
+      dia: dia,
+      movimiento: "Ingreso",
+      categoria: ingresoActual,
+      detalle: ingresoActual,
+      turno: turnoActual,
+      monto: monto,
+      saldoLuego: saldo
+    });
 
-      let categorias = {
-        1: "Sueldos",
-        2: "Gastos operativos",
-        3: "Gastos mercadería",
-        4: "Gastos servicios",
-        5: "Gastos administrativos",
-        6: "Otros"
-      };
-
-      let monto = Number(prompt("Ingrese el monto"));
-      let comentario = prompt("Comentario. Ejemplo: Gisela");
-
-      if(!dia || !monto){
-        alert("Faltan datos");
-        return;
-      }
-
-      movimientos.push({
-        dia: dia,
-        tipo: "Gasto",
-        categoria: categorias[categoria] || "Otros",
-        monto: monto,
-        comentario: comentario
-      });
-
-      saldo -= monto;
-      guardarDatos();
-      mostrarDatos();
-    }
-
-    function modificarSaldo(){
-      let nuevoSaldo = Number(prompt("Ingrese la plata actual"));
-
-      if(!nuevoSaldo && nuevoSaldo !== 0){
-        alert("Monto inválido");
-        return;
-      }
-
-      let dia = prompt("Ingrese el día de modificación");
-
-      movimientos.push({
-        dia: dia,
-        tipo: "Modificación de saldo",
-        categoria: "Saldo manual",
-        monto: nuevoSaldo,
-        comentario: "Saldo modificado manualmente"
-      });
-
-      saldo = nuevoSaldo;
-      guardarDatos();
-      mostrarDatos();
-    }
-
-    function mostrarDatos(){
-      document.getElementById("saldoActual").innerText = saldo.toLocaleString("es-AR");
-
-      let resumen = {};
-
-      movimientos.forEach(mov => {
-        if(!resumen[mov.dia]){
-          resumen[mov.dia] = {
-            central: 0,
-            sucursal: 0,
-            reparto: 0,
-            gastos: 0,
-            comentarios: []
-          };
-        }
-
-        if(mov.tipo === "Central") resumen[mov.dia].central += mov.monto;
-        if(mov.tipo === "Sucursal") resumen[mov.dia].sucursal += mov.monto;
-        if(mov.tipo === "Reparto") resumen[mov.dia].reparto += mov.monto;
-        if(mov.tipo === "Gasto") resumen[mov.dia].gastos += mov.monto;
-
-        resumen[mov.dia].comentarios.push(mov.categoria + ": " + mov.comentario);
-      });
-
-      let tabla = document.getElementById("tabla");
-      tabla.innerHTML = "";
-
-      Object.keys(resumen).forEach(dia => {
-        let r = resumen[dia];
-        let balance = r.central + r.sucursal + r.reparto - r.gastos;
-
-        tabla.innerHTML += `
-          <tr>
-            <td>${dia}</td>
-            <td>$${r.central.toLocaleString("es-AR")}</td>
-            <td>$${r.sucursal.toLocaleString("es-AR")}</td>
-            <td>$${r.reparto.toLocaleString("es-AR")}</td>
-            <td>$${r.gastos.toLocaleString("es-AR")}</td>
-            <td>$${balance.toLocaleString("es-AR")}</td>
-            <td>${r.comentarios.join("<br>")}</td>
-          </tr>
-        `;
-      });
-    }
-
-    function descargarExcel(){
-      let csv = "Dia,Tipo,Categoria,Monto,Comentario\n";
-
-      movimientos.forEach(mov => {
-        csv += `${mov.dia},${mov.tipo},${mov.categoria},${mov.monto},${mov.comentario}\n`;
-      });
-
-      let archivo = new Blob([csv], { type: "text/csv" });
-      let url = URL.createObjectURL(archivo);
-
-      let link = document.createElement("a");
-      link.href = url;
-      link.download = "finanzas-panaderia.csv";
-      link.click();
-    }
-
-    function borrarTodo(){
-      let confirmar = confirm("¿Seguro que querés borrar todo?");
-      if(confirmar){
-        movimientos = [];
-        saldo = 0;
-        guardarDatos();
-        mostrarDatos();
-      }
-    }
-
+    guardarDatos();
     mostrarDatos();
-  </script>
+
+    document.getElementById("montoIngreso").value = "";
+  }
+
+  function mostrarEmpleados(){
+    let categoria = document.getElementById("categoriaGasto").value;
+
+    if(categoria === "Sueldos"){
+      document.getElementById("zonaEmpleados").style.display = "block";
+    } else {
+      document.getElementById("zonaEmpleados").style.display = "none";
+    }
+  }
+
+  function guardarGasto(){
+    let dia = document.getElementById("diaGasto").value;
+    let categoria = document.getElementById("categoriaGasto").value;
+    let monto = Number(document.getElementById("montoGasto").value);
+    let comentario = document.getElementById("comentarioGasto").value;
+
+    let detalle = "";
+
+    if(categoria === "Sueldos"){
+      detalle = document.getElementById("empleadoGasto").value;
+    } else {
+      detalle = comentario || categoria;
+    }
+
+    if(!dia || !monto){
+      alert("Falta día o monto");
+      return;
+    }
+
+    saldo -= monto;
+
+    movimientos.push({
+      dia: dia,
+      movimiento: "Gasto",
+      categoria: categoria,
+      detalle: detalle,
+      turno: "-",
+      monto: monto,
+      saldoLuego: saldo
+    });
+
+    guardarDatos();
+    mostrarDatos();
+
+    document.getElementById("montoGasto").value = "";
+    document.getElementById("comentarioGasto").value = "";
+  }
+
+  function guardarSaldo(){
+    let dia = document.getElementById("diaSaldo").value;
+    let nuevoSaldo = Number(document.getElementById("nuevoSaldo").value);
+
+    if(!dia && nuevoSaldo !== 0){
+      alert("Faltan datos");
+      return;
+    }
+
+    saldo = nuevoSaldo;
+
+    movimientos.push({
+      dia: dia,
+      movimiento: "Modificación de saldo",
+      categoria: "Saldo manual",
+      detalle: "Plata actual modificada",
+      turno: "-",
+      monto: nuevoSaldo,
+      saldoLuego: saldo
+    });
+
+    guardarDatos();
+    mostrarDatos();
+  }
+
+  function mostrarDatos(){
+    document.getElementById("saldoActual").innerText = formato(saldo);
+
+    let totalCentral = 0;
+    let totalSucursal = 0;
+    let totalReparto = 0;
+    let totalGastos = 0;
+
+    let tabla = document.getElementById("tabla");
+    tabla.innerHTML = "";
+
+    movimientos.forEach(mov => {
+      if(mov.movimiento === "Ingreso" && mov.categoria === "Central") totalCentral += mov.monto;
+      if(mov.movimiento === "Ingreso" && mov.categoria === "Sucursal") totalSucursal += mov.monto;
+      if(mov.movimiento === "Ingreso" && mov.categoria === "Reparto") totalReparto += mov.monto;
+      if(mov.movimiento === "Gasto") totalGastos += mov.monto;
+
+      tabla.innerHTML += `
+        <tr>
+          <td>${mov.dia}</td>
+          <td>${mov.movimiento}</td>
+          <td>${mov.categoria}</td>
+          <td>${mov.detalle}</td>
+          <td>${mov.turno}</td>
+          <td>$${formato(mov.monto)}</td>
+          <td>$${formato(mov.saldoLuego)}</td>
+        </tr>
+      `;
+    });
+
+    document.getElementById("totalCentral").innerText = formato(totalCentral);
+    document.getElementById("totalSucursal").innerText = formato(totalSucursal);
+    document.getElementById("totalReparto").innerText = formato(totalReparto);
+    document.getElementById("totalGastos").innerText = formato(totalGastos);
+    document.getElementById("totalBalance").innerText = formato(totalCentral + totalSucursal + totalReparto - totalGastos);
+  }
+
+  function descargarExcel(){
+    let csv = "Dia,Movimiento,Categoria,Detalle,Turno,Monto,Saldo luego\n";
+
+    movimientos.forEach(mov => {
+      csv += `${mov.dia},${mov.movimiento},${mov.categoria},${mov.detalle},${mov.turno},${mov.monto},${mov.saldoLuego}\n`;
+    });
+
+    let archivo = new Blob([csv], { type: "text/csv" });
+    let url = URL.createObjectURL(archivo);
+
+    let link = document.createElement("a");
+    link.href = url;
+    link.download = "finanzas-panaderia.csv";
+    link.click();
+  }
+
+  function borrarTodo(){
+    if(confirm("¿Seguro que querés borrar todo?")){
+      movimientos = [];
+      saldo = 0;
+      guardarDatos();
+      mostrarDatos();
+    }
+  }
+
+  mostrarDatos();
+</script>
 
 </body>
 </html>
