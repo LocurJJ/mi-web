@@ -227,10 +227,12 @@
     return new Date().toISOString().split("T")[0];
   }
 
-  function guardarDatos(){
-    localStorage.setItem("movimientos", JSON.stringify(movimientos));
-    localStorage.setItem("saldo", saldo);
-  }
+function guardarDatos(){
+  set(ref(db, "finanzas"), {
+    movimientos: movimientos,
+    saldo: saldo
+  });
+}
 
   function abrirPantalla(nombre){
     document.querySelectorAll(".pantalla").forEach(p => p.style.display = "none");
@@ -497,7 +499,20 @@ function deshacerMovimiento(index){
     }
   }
 
-  mostrarDatos();
+function escucharFirebase(){
+  onValue(ref(db, "finanzas"), (snapshot) => {
+    let datos = snapshot.val();
+
+    if(datos){
+      movimientos = datos.movimientos || [];
+      saldo = datos.saldo || 0;
+    }
+
+    mostrarDatos();
+  });
+}
+
+window.addEventListener("firebaseListo", escucharFirebase);
 </script>
   <script type="module">
 
@@ -531,7 +546,7 @@ window.set = set;
 window.onValue = onValue;
 
 console.log("Firebase conectado");
-
+window.dispatchEvent(new Event("firebaseListo"));
 </script>
 
 </body>
