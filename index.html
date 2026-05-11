@@ -499,6 +499,40 @@ function deshacerMovimiento(index){
 
   mostrarDatos();
 </script>
+  <script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getDatabase,
+  ref,
+  set,
+  onValue
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDxUlFuZa-4AN3rdn_m2VIS2LpRkbh_Bp8",
+  authDomain: "panaderia-finanzas.firebaseapp.com",
+  databaseURL: "https://panaderia-finanzas-default-rtdb.firebaseio.com",
+  projectId: "panaderia-finanzas",
+  storageBucket: "panaderia-finanzas.appspot.com",
+  messagingSenderId: "196371308937",
+  appId: "1:196371308937:web:fd9f4b6470f6126d560158"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+window.db = db;
+window.ref = ref;
+window.set = set;
+window.onValue = onValue;
+
+console.log("Firebase conectado");
+
+</script>
 
 </body>
 </html>
