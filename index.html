@@ -206,6 +206,7 @@
       <th>Turno</th>
       <th>Monto</th>
       <th>Saldo luego</th>
+<th>Deshacer</th>
     </tr>
   </thead>
   <tbody id="tabla"></tbody>
@@ -405,43 +406,72 @@ if(comentario){
     mostrarDatos();
   }
 
-  function mostrarDatos(){
-    document.getElementById("saldoActual").innerText = formato(saldo);
+ function mostrarDatos(){
+  document.getElementById("saldoActual").innerText = formato(saldo);
 
-    let totalCentral = 0;
-    let totalSucursal = 0;
-    let totalReparto = 0;
-    let totalGastos = 0;
+  let totalCentral = 0;
+  let totalSucursal = 0;
+  let totalReparto = 0;
+  let totalGastos = 0;
 
-    let tabla = document.getElementById("tabla");
-    tabla.innerHTML = "";
+  let tabla = document.getElementById("tabla");
+  tabla.innerHTML = "";
 
-    movimientos.forEach(mov => {
-      if(mov.movimiento === "Ingreso" && mov.categoria === "Central") totalCentral += mov.monto;
-      if(mov.movimiento === "Ingreso" && mov.categoria === "Sucursal") totalSucursal += mov.monto;
-      if(mov.movimiento === "Ingreso" && mov.categoria === "Reparto") totalReparto += mov.monto;
-      if(mov.movimiento === "Gasto") totalGastos += mov.monto;
+  movimientos.forEach((mov, index) => {
+    if(mov.movimiento === "Ingreso" && mov.categoria === "Central") totalCentral += mov.monto;
+    if(mov.movimiento === "Ingreso" && mov.categoria === "Sucursal") totalSucursal += mov.monto;
+    if(mov.movimiento === "Ingreso" && mov.categoria === "Reparto") totalReparto += mov.monto;
+    if(mov.movimiento === "Gasto") totalGastos += mov.monto;
 
-      tabla.innerHTML += `
-        <tr>
-          <td>${mov.dia}</td>
-          <td>${mov.movimiento}</td>
-          <td>${mov.categoria}</td>
-          <td>${mov.detalle}</td>
-          <td>${mov.turno}</td>
-          <td>$${formato(mov.monto)}</td>
-          <td>$${formato(mov.saldoLuego)}</td>
-        </tr>
-      `;
-    });
+    tabla.innerHTML += `
+      <tr>
+        <td>${mov.dia}</td>
+        <td>${mov.movimiento}</td>
+        <td>${mov.categoria}</td>
+        <td>${mov.detalle}</td>
+        <td>${mov.turno}</td>
+        <td>$${formato(mov.monto)}</td>
+        <td>$${formato(mov.saldoLuego)}</td>
+        <td><button onclick="deshacerMovimiento(${index})">X</button></td>
+      </tr>
+    `;
+  });
 
-    document.getElementById("totalCentral").innerText = formato(totalCentral);
-    document.getElementById("totalSucursal").innerText = formato(totalSucursal);
-    document.getElementById("totalReparto").innerText = formato(totalReparto);
-    document.getElementById("totalGastos").innerText = formato(totalGastos);
-    document.getElementById("totalBalance").innerText = formato(totalCentral + totalSucursal + totalReparto - totalGastos);
+  document.getElementById("totalCentral").innerText = formato(totalCentral);
+  document.getElementById("totalSucursal").innerText = formato(totalSucursal);
+  document.getElementById("totalReparto").innerText = formato(totalReparto);
+  document.getElementById("totalGastos").innerText = formato(totalGastos);
+  document.getElementById("totalBalance").innerText = formato(totalCentral + totalSucursal + totalReparto - totalGastos);
+}
+
+  function recalcularSaldo(){
+  saldo = 0;
+
+  movimientos.forEach(mov => {
+    if(mov.movimiento === "Ingreso"){
+      saldo += mov.monto;
+    }
+
+    if(mov.movimiento === "Gasto"){
+      saldo -= mov.monto;
+    }
+
+    if(mov.movimiento === "Modificación de saldo"){
+      saldo = mov.monto;
+    }
+
+    mov.saldoLuego = saldo;
+  });
+}
+
+function deshacerMovimiento(index){
+  if(confirm("¿Querés borrar este movimiento?")){
+    movimientos.splice(index, 1);
+    recalcularSaldo();
+    guardarDatos();
+    mostrarDatos();
   }
-
+}
   function descargarExcel(){
     let csv = "Dia,Movimiento,Categoria,Detalle,Turno,Monto,Saldo luego\n";
 
