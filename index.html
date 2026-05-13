@@ -425,7 +425,7 @@ if(comentario){
   let tabla = document.getElementById("tabla");
   tabla.innerHTML = "";
 
-  movimientos.forEach((mov, index) => {
+ [...movimientos].reverse().forEach((mov, indexOriginal) => {
     if(mov.movimiento === "Ingreso" && mov.categoria === "Central") totalCentral += mov.monto;
     if(mov.movimiento === "Ingreso" && mov.categoria === "Sucursal") totalSucursal += mov.monto;
     if(mov.movimiento === "Ingreso" && mov.categoria === "Reparto") totalReparto += mov.monto;
@@ -440,7 +440,7 @@ if(comentario){
         <td>${mov.turno}</td>
         <td>$${formato(mov.monto)}</td>
         <td>$${formato(mov.saldoLuego)}</td>
-        <td><button onclick="deshacerMovimiento(${index})">X</button></td>
+        <td><button onclick="deshacerMovimiento(${movimientos.length - 1 - indexOriginal})">X</button></td>
       </tr>
     `;
   });
