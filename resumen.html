@@ -69,6 +69,20 @@
 <header>
   <h1>Resumen de Finanzas</h1>
   <a href="index.html"><button>Volver</button></a>
+  <section class="card">
+  <h2>Filtrar fechas</h2>
+
+  <label>Desde</label>
+  <input type="date" id="fechaDesde">
+
+  <label>Hasta</label>
+  <input type="date" id="fechaHasta">
+
+  <br><br>
+
+  <button onclick="aplicarFiltro()">Aplicar filtro</button>
+  <button onclick="limpiarFiltro()">Ver todo</button>
+</section>
 </header>
 
 <section class="card">
@@ -118,6 +132,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+let todosLosMovimientos = [];
+let fechaDesde = "";
+let fechaHasta = "";
 
 function formato(num){
   return Number(num).toLocaleString("es-AR");
@@ -125,7 +142,15 @@ function formato(num){
 
 onValue(ref(db, "finanzas"), (snapshot) => {
   let datos = snapshot.val();
-  let movimientos = datos?.movimientos || [];
+
+  todosLosMovimientos = datos?.movimientos || [];
+
+  procesarDatos(
+    filtrarPorFecha(todosLosMovimientos)
+  );
+});
+
+function procesarDatos(movimientos){
 
   let resumen = {};
 
@@ -161,10 +186,48 @@ onValue(ref(db, "finanzas"), (snapshot) => {
     resumen[dia].total += monto;
   });
 
-  mostrarTabla(resumen);
-  mostrarGrafico(resumen);
-});
+mostrarTabla(resumen);
+mostrarGrafico(resumen);
+}
+function filtrarPorFecha(movimientos){
 
+  return movimientos.filter(mov => {
+
+    if(fechaDesde && mov.dia < fechaDesde){
+      return false;
+    }
+
+    if(fechaHasta && mov.dia > fechaHasta){
+      return false;
+    }
+
+    return true;
+  });
+
+}
+
+window.aplicarFiltro = function(){
+
+  fechaDesde = document.getElementById("fechaDesde").value;
+  fechaHasta = document.getElementById("fechaHasta").value;
+
+  procesarDatos(
+    filtrarPorFecha(todosLosMovimientos)
+  );
+
+}
+
+window.limpiarFiltro = function(){
+
+  fechaDesde = "";
+  fechaHasta = "";
+
+  document.getElementById("fechaDesde").value = "";
+  document.getElementById("fechaHasta").value = "";
+
+  procesarDatos(todosLosMovimientos);
+
+}
 function mostrarTabla(resumen){
   let tabla = document.getElementById("tablaResumen");
   tabla.innerHTML = "";
