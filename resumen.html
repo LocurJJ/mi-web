@@ -108,7 +108,10 @@
   <h2>Gráfico de entrada total por día</h2>
   <div id="grafico"></div>
 </section>
-
+<section class="card">
+  <h2>Gastos por categoría</h2>
+  <div id="graficoGastos"></div>
+</section>
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -153,8 +156,18 @@ onValue(ref(db, "finanzas"), (snapshot) => {
 function procesarDatos(movimientos){
 
   let resumen = {};
-
+let gastosPorCategoria = {};
   movimientos.forEach(mov => {
+    if(mov.movimiento === "Gasto"){
+  let categoriaGasto = mov.categoria;
+  let montoGasto = Number(mov.monto);
+
+  if(!gastosPorCategoria[categoriaGasto]){
+    gastosPorCategoria[categoriaGasto] = 0;
+  }
+
+  gastosPorCategoria[categoriaGasto] += montoGasto;
+}
     if(mov.movimiento !== "Ingreso") return;
 
     let dia = mov.dia;
@@ -188,6 +201,7 @@ function procesarDatos(movimientos){
 
 mostrarTabla(resumen);
 mostrarGrafico(resumen);
+  mostrarGraficoGastos(gastosPorCategoria);
 }
 function filtrarPorFecha(movimientos){
 
@@ -246,6 +260,30 @@ function mostrarTabla(resumen){
         <td>$${formato(r.repartoTarde)}</td>
         <td><strong>$${formato(r.total)}</strong></td>
       </tr>
+    `;
+  });
+}
+  function mostrarGraficoGastos(gastosPorCategoria){
+  let grafico = document.getElementById("graficoGastos");
+  grafico.innerHTML = "";
+
+  let maximo = 0;
+
+  Object.keys(gastosPorCategoria).forEach(categoria => {
+    if(gastosPorCategoria[categoria] > maximo){
+      maximo = gastosPorCategoria[categoria];
+    }
+  });
+
+  Object.keys(gastosPorCategoria).forEach(categoria => {
+    let total = gastosPorCategoria[categoria];
+    let ancho = maximo > 0 ? (total / maximo) * 100 : 0;
+
+    grafico.innerHTML += `
+      <p><strong>${categoria}</strong> - $${formato(total)}</p>
+      <div class="barra" style="width:${ancho}%;">
+        $${formato(total)}
+      </div>
     `;
   });
 }
