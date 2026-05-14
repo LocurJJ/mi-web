@@ -13,144 +13,33 @@
       --texto: #1d1d1d;
       --blanco: #fff;
     }
-
     * { box-sizing: border-box; }
-
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: var(--fondo);
-      color: var(--texto);
-    }
-
-    .wrap {
-      width: min(1100px, 94%);
-      margin: 24px auto 40px;
-    }
-
-    .card {
-      background: var(--blanco);
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 9px rgba(0,0,0,0.06);
-    }
-
+    body { font-family: Arial, sans-serif; margin: 0; background: var(--fondo); color: var(--texto); }
+    .wrap { width: min(1100px, 94%); margin: 24px auto 40px; }
+    .card { background: var(--blanco); border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 9px rgba(0,0,0,0.06); }
     h1, h2, h3, p { margin: 0 0 10px; }
-
-    .filtros {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
-
-    input[type="date"], button {
-      border-radius: 8px;
-      border: 1px solid var(--gris);
-      padding: 10px 12px;
-      font-size: 15px;
-    }
-
-    button {
-      border: none;
-      background: var(--verde);
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .tabs {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 14px;
-    }
-
+    .filtros { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    input[type="date"], button { border-radius: 8px; border: 1px solid var(--gris); padding: 10px 12px; font-size: 15px; }
+    button { border: none; background: var(--verde); cursor: pointer; font-weight: 700; }
+    .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
     .tab-btn.active { outline: 3px solid #8bc200; }
-
     .tab-content { display: none; }
     .tab-content.active { display: block; }
-
-    .metricas {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-    }
-
-    .metrica {
-      background: #f9f9f9;
-      border-radius: 10px;
-      padding: 12px;
-      border: 1px solid #ececec;
-    }
-
+    .metricas { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 14px 0; }
+    .metrica { background: #f9f9f9; border-radius: 10px; padding: 12px; border: 1px solid #ececec; }
     .metrica small { color: #666; display: block; }
     .metrica strong { font-size: 20px; }
-
     .barra-item { margin-bottom: 10px; }
-    .barra {
-      background: var(--azul);
-      color: #fff;
-      border-radius: 8px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      padding: 0 10px;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-
-    .subcat-buttons {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
-    .subcat-buttons button {
-      background: #e7e7e7;
-      font-weight: 600;
-    }
-
-    .subcat-buttons button.active {
-      background: #cdd9ff;
-      outline: 2px solid #7f98ee;
-    }
-
-    .lista p {
-      margin: 6px 0;
-      text-align: left;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 14px;
-    }
-    table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:10px;
-  background:white;
-}
-
-th{
-  background:#b7f000;
-  padding:10px;
-  border:1px solid #ccc;
-  font-size:14px;
-}
-
-td{
-  padding:10px;
-  border:1px solid #ccc;
-  text-align:center;
-  font-size:14px;
-}
-
-tr:nth-child(even){
-  background:#f7f7f7;
-}
+    .barra { background: var(--azul); color: #fff; border-radius: 8px; min-height: 30px; display: flex; align-items: center; padding: 4px 10px; white-space: nowrap; overflow: hidden; }
+    .subcat-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .subcat-buttons button { background: #e7e7e7; font-weight: 600; }
+    .subcat-buttons button.active { background: #cdd9ff; outline: 2px solid #7f98ee; }
+    .lista p { margin: 6px 0; text-align: left; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
+    table { width:100%; border-collapse:collapse; margin-top:10px; background:white; }
+    th { background:#b7f000; padding:10px; border:1px solid #ccc; font-size:14px; }
+    td { padding:10px; border:1px solid #ccc; text-align:center; font-size:14px; }
+    tr:nth-child(even){ background:#f7f7f7; }
   </style>
 </head>
 <body>
@@ -164,7 +53,6 @@ tr:nth-child(even){
         <button onclick="aplicarFiltro()">Aplicar filtro</button>
         <button onclick="limpiarFiltro()">Ver todo</button>
       </div>
-
       <div class="tabs">
         <button class="tab-btn active" data-tab="ingresos">Ingresos</button>
         <button class="tab-btn" data-tab="gastos">Gastos</button>
@@ -175,22 +63,21 @@ tr:nth-child(even){
     <section id="tab-ingresos" class="tab-content active card">
       <h2>Ingresos</h2>
       <h3>Resumen por día</h3>
-
-<table>
-  <thead>
-    <tr>
-      <th>Día</th>
-      <th>Central mañana</th>
-      <th>Central tarde</th>
-      <th>Sucursal mañana</th>
-      <th>Sucursal tarde</th>
-      <th>Reparto mañana</th>
-      <th>Reparto tarde</th>
-      <th>Total día</th>
-    </tr>
-  </thead>
-  <tbody id="tablaIngresos"></tbody>
-</table>
+      <table>
+        <thead>
+          <tr>
+            <th>Día</th>
+            <th>Central mañana</th>
+            <th>Central tarde</th>
+            <th>Sucursal mañana</th>
+            <th>Sucursal tarde</th>
+            <th>Reparto mañana</th>
+            <th>Reparto tarde</th>
+            <th>Total día</th>
+          </tr>
+        </thead>
+        <tbody id="tablaIngresos"></tbody>
+      </table>
       <div class="metricas" id="metricasIngresos"></div>
       <h3>Ingresos por día</h3>
       <div id="graficoIngresosDia"></div>
@@ -221,239 +108,213 @@ tr:nth-child(even){
           <div id="balanceGastosDia"></div>
         </div>
       </div>
-<h3>Gráfico balance diario</h3>
-<canvas id="graficoLineaBalance"></canvas>
+      <h3>Gráfico balance diario</h3>
+      <canvas id="graficoLineaBalance"></canvas>
       <h3>Gráfico caja actual / saldo acumulado</h3>
       <div id="saldoAcumulado"></div>
     </section>
   </main>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDxUlFuZa-4AN3rdn_m2VIS2LpRkbh_Bp8",
-  authDomain: "panaderia-finanzas.firebaseapp.com",
-  databaseURL: "https://panaderia-finanzas-default-rtdb.firebaseio.com",
-  projectId: "panaderia-finanzas",
-  storageBucket: "panaderia-finanzas.appspot.com",
-  messagingSenderId: "196371308937",
-  appId: "1:196371308937:web:fd9f4b6470f6126d560158"
-};
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-let todosLosMovimientos = [];
-let fechaDesde = "";
-let fechaHasta = "";
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxUlFuZa-4AN3rdn_m2VIS2LpRkbh_Bp8",
+      authDomain: "panaderia-finanzas.firebaseapp.com",
+      databaseURL: "https://panaderia-finanzas-default-rtdb.firebaseio.com",
+      projectId: "panaderia-finanzas",
+      storageBucket: "panaderia-finanzas.appspot.com",
+      messagingSenderId: "196371308937",
+      appId: "1:196371308937:web:fd9f4b6470f6126d560158"
+    };
 
-const f = n => Number(n || 0).toLocaleString("es-AR");
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    let todosLosMovimientos = [];
+    let fechaDesde = "";
+    let fechaHasta = "";
+    let chartBalance = null;
 
-function barraHtml(label, total, max) {
-  const ancho = max > 0 ? Math.max((total / max) * 100, 2) : 0;
-  return `<div class="barra-item"><p><strong>${label}</strong> - $${f(total)}</p><div class="barra" style="width:${ancho}%">$${f(total)}</div></div>`;
-}
+    const f = n => Number(n || 0).toLocaleString("es-AR");
 
-function filtrarPorFecha(movs) {
-  return movs.filter(m => (!fechaDesde || m.dia >= fechaDesde) && (!fechaHasta || m.dia <= fechaHasta));
-}
-
-function agrupar(movs) {
-  const ingresosDia = {}, gastosDia = {}, gastosCat = {}, detalle = {}, ingresosMes = {};
-  movs.forEach(m => {
-    const dia = m.dia;
-    const monto = Number(m.monto || 0);
-    if (m.movimiento === "Ingreso") {
-      ingresosDia[dia] = (ingresosDia[dia] || 0) + monto;
-      const mes = dia.slice(0, 7);
-      ingresosMes[mes] = (ingresosMes[mes] || 0) + monto;
+    function barraHtml(label, total, max) {
+      const ancho = max > 0 ? Math.max((Math.abs(total) / max) * 100, 2) : 0;
+      const color = total < 0 ? "#cc4d4d" : "var(--azul)";
+      return `<div class="barra-item"><p><strong>${label}</strong> - $${f(total)}</p><div class="barra" style="width:${ancho}%; background:${color};">$${f(total)}</div></div>`;
     }
-    if (m.movimiento === "Gasto") {
-      gastosDia[dia] = (gastosDia[dia] || 0) + monto;
-      gastosCat[m.categoria] = (gastosCat[m.categoria] || 0) + monto;
-      if (!detalle[m.categoria]) detalle[m.categoria] = {};
-      const det = m.detalle || "Sin detalle";
-      detalle[m.categoria][det] = (detalle[m.categoria][det] || 0) + monto;
+
+    function filtrarPorFecha(movs) {
+      return movs.filter(m => (!fechaDesde || m.dia >= fechaDesde) && (!fechaHasta || m.dia <= fechaHasta));
     }
-  });
-  return { ingresosDia, gastosDia, gastosCat, detalle, ingresosMes };
-}
 
-function render(data) {
-  let chartBalance = null;
-  let movimientosFiltrados = filtrarPorFecha(todosLosMovimientos);
-mostrarTablaIngresos(movimientosFiltrados);
-  const diasIng = Object.entries(data.ingresosDia).sort(([a],[b]) => a.localeCompare(b));
-  const totalIngreso = diasIng.reduce((acc, [,v]) => acc + v, 0);
-  const promedio = diasIng.length ? totalIngreso / diasIng.length : 0;
-  const mejor = diasIng.reduce((a,b) => b[1] > a[1] ? b : a, ["-",0]);
-  const peor = diasIng.reduce((a,b) => b[1] < a[1] ? b : a, ["-",Infinity]);
+    function agrupar(movs) {
+      const ingresosDia = {}, gastosDia = {}, gastosCat = {}, detalle = {}, ingresosMes = {};
+      movs.forEach(m => {
+        const dia = m.dia;
+        const monto = Number(m.monto || 0);
+        if (m.movimiento === "Ingreso") {
+          ingresosDia[dia] = (ingresosDia[dia] || 0) + monto;
+          const mes = dia.slice(0, 7);
+          ingresosMes[mes] = (ingresosMes[mes] || 0) + monto;
+        }
+        if (m.movimiento === "Gasto") {
+          gastosDia[dia] = (gastosDia[dia] || 0) + monto;
+          gastosCat[m.categoria] = (gastosCat[m.categoria] || 0) + monto;
+          if (!detalle[m.categoria]) detalle[m.categoria] = {};
+          const det = m.detalle || "Sin detalle";
+          detalle[m.categoria][det] = (detalle[m.categoria][det] || 0) + monto;
+        }
+      });
+      return { ingresosDia, gastosDia, gastosCat, detalle, ingresosMes };
+    }
 
-  document.getElementById("metricasIngresos").innerHTML = `
-    <div class="metrica"><small>Ingresos por día</small><strong>${diasIng.length}</strong></div>
-    <div class="metrica"><small>Mejor día</small><strong>${mejor[0]} · $${f(mejor[1])}</strong></div>
-    <div class="metrica"><small>Promedio diario</small><strong>$${f(promedio)}</strong></div>
-    <div class="metrica"><small>Peor día</small><strong>${peor[1]===Infinity?"-":`${peor[0]} · $${f(peor[1])}`}</strong></div>`;
+    function mostrarTablaIngresos(movs) {
+      const tabla = document.getElementById("tablaIngresos");
+      tabla.innerHTML = "";
+      const resumen = {};
 
-  const maxIng = Math.max(0, ...diasIng.map(([,v]) => v));
-  document.getElementById("graficoIngresosDia").innerHTML = diasIng.map(([d,v]) => barraHtml(d, v, maxIng)).join("");
+      movs.forEach(m => {
+        if (m.movimiento !== "Ingreso") return;
+        if (!resumen[m.dia]) {
+          resumen[m.dia] = { centralManana: 0, centralTarde: 0, sucursalManana: 0, sucursalTarde: 0, repartoManana: 0, repartoTarde: 0, total: 0 };
+        }
+        const monto = Number(m.monto || 0);
+        if (m.categoria === "Central" && m.turno === "mañana") resumen[m.dia].centralManana += monto;
+        if (m.categoria === "Central" && m.turno === "tarde") resumen[m.dia].centralTarde += monto;
+        if (m.categoria === "Sucursal" && m.turno === "mañana") resumen[m.dia].sucursalManana += monto;
+        if (m.categoria === "Sucursal" && m.turno === "tarde") resumen[m.dia].sucursalTarde += monto;
+        if (m.categoria === "Reparto" && m.turno === "mañana") resumen[m.dia].repartoManana += monto;
+        if (m.categoria === "Reparto" && m.turno === "tarde") resumen[m.dia].repartoTarde += monto;
+        resumen[m.dia].total += monto;
+      });
 
-  const meses = Object.entries(data.ingresosMes).sort(([a],[b]) => a.localeCompare(b));
-  const maxMes = Math.max(0, ...meses.map(([,v]) => v));
-  document.getElementById("graficoIngresosMes").innerHTML = meses.map(([m,v]) => barraHtml(m, v, maxMes)).join("");
+      Object.keys(resumen).sort().forEach(dia => {
+        const r = resumen[dia];
+        tabla.innerHTML += `<tr><td>${dia}</td><td>$${f(r.centralManana)}</td><td>$${f(r.centralTarde)}</td><td>$${f(r.sucursalManana)}</td><td>$${f(r.sucursalTarde)}</td><td>$${f(r.repartoManana)}</td><td>$${f(r.repartoTarde)}</td><td><strong>$${f(r.total)}</strong></td></tr>`;
+      });
+    }
 
-  const cat = Object.entries(data.gastosCat).sort((a,b) => b[1]-a[1]);
-  const maxCat = Math.max(0, ...cat.map(([,v]) => v));
-  document.getElementById("graficoGastos").innerHTML = cat.map(([c,v]) => barraHtml(c, v, maxCat)).join("");
+    function mostrarGraficoLineaBalance(balDia) {
+      const canvas = document.getElementById("graficoLineaBalance");
+      if (!canvas) return;
+      const labels = balDia.map(item => item[0]);
+      const valores = balDia.map(item => item[1]);
 
-  const botones = document.getElementById("botonesGasto");
-  botones.innerHTML = cat.map(([c]) => `<button data-cat="${c}">${c}</button>`).join("");
-  botones.querySelectorAll("button").forEach(btn => btn.onclick = () => abrirDetalleGasto(btn.dataset.cat, data.detalle));
+      if (chartBalance) chartBalance.destroy();
 
-  const dias = Array.from(new Set([...Object.keys(data.ingresosDia), ...Object.keys(data.gastosDia)])).sort();
-  const ingBal = dias.map(d => [d, data.ingresosDia[d] || 0]);
-  const gasBal = dias.map(d => [d, data.gastosDia[d] || 0]);
-  const balDia = dias.map(d => [d, (data.ingresosDia[d] || 0) - (data.gastosDia[d] || 0)]);
-
-  document.getElementById("balanceIngresosDia").innerHTML = ingBal.map(([d,v]) => barraHtml(d, v, Math.max(...ingBal.map(([,x]) => x),0))).join("");
-  document.getElementById("balanceGastosDia").innerHTML = gasBal.map(([d,v]) => barraHtml(d, v, Math.max(...gasBal.map(([,x]) => x),0))).join("");
-  mostrarGraficoLineaBalance(balDia);
-
-  let acumulado = 0;
-  const ac = balDia.map(([d,v]) => [d, acumulado += v]);
-  document.getElementById("saldoAcumulado").innerHTML = ac.map(([d,v]) => barraHtml(d, v, Math.max(...ac.map(([,x]) => Math.abs(x)),0))).join("");
-}
-  function mostrarGraficoLineaBalance(balDia){
-  let canvas = document.getElementById("graficoLineaBalance");
-
-  if(!canvas) return;
-
-  let labels = balDia.map(item => item[0]);
-  let valores = balDia.map(item => item[1]);
-
-  if(chartBalance){
-    chartBalance.destroy();
-  }
-
-  chartBalance = new Chart(canvas, {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Balance diario",
-        data: valores,
-        tension: 0.3,
-        pointRadius: 5,
-        borderWidth: 3
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          ticks: {
-            callback: function(value){
-              return "$" + Number(value).toLocaleString("es-AR");
+      chartBalance = new Chart(canvas, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [{
+            label: "Balance diario",
+            data: valores,
+            tension: 0.3,
+            pointRadius: 4,
+            borderWidth: 3,
+            borderColor: "#2b4d7a",
+            backgroundColor: "rgba(95, 143, 196, 0.25)",
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              ticks: { callback: value => "$" + Number(value).toLocaleString("es-AR") }
             }
           }
         }
-      }
-    }
-  });
-}
-
-function abrirDetalleGasto(categoria, detalle) {
-  document.getElementById("detalleCategoria").style.display = "block";
-  document.getElementById("tituloDetalle").textContent = `Detalle: ${categoria}`;
-  document.getElementById("detalleGasto").innerHTML = Object.entries(detalle[categoria] || {})
-    .sort((a,b) => b[1]-a[1])
-    .map(([k,v]) => `<p><strong>${k}</strong> — $${f(v)}</p>`)
-    .join("");
-
-  document.querySelectorAll("#botonesGasto button").forEach(b => b.classList.toggle("active", b.dataset.cat === categoria));
-}
-  function mostrarTablaIngresos(movs){
-  let tabla = document.getElementById("tablaIngresos");
-  tabla.innerHTML = "";
-
-  let resumen = {};
-
-  movs.forEach(m => {
-    if(m.movimiento !== "Ingreso") return;
-
-    if(!resumen[m.dia]){
-      resumen[m.dia] = {
-        centralManana: 0,
-        centralTarde: 0,
-        sucursalManana: 0,
-        sucursalTarde: 0,
-        repartoManana: 0,
-        repartoTarde: 0,
-        total: 0
-      };
+      });
     }
 
-    let monto = Number(m.monto || 0);
+    function abrirDetalleGasto(categoria, detalle) {
+      document.getElementById("detalleCategoria").style.display = "block";
+      document.getElementById("tituloDetalle").textContent = `Detalle: ${categoria}`;
+      document.getElementById("detalleGasto").innerHTML = Object.entries(detalle[categoria] || {})
+        .sort((a,b) => b[1] - a[1])
+        .map(([k,v]) => `<p><strong>${k}</strong> — $${f(v)}</p>`)
+        .join("");
+      document.querySelectorAll("#botonesGasto button").forEach(b => b.classList.toggle("active", b.dataset.cat === categoria));
+    }
 
-    if(m.categoria === "Central" && m.turno === "mañana") resumen[m.dia].centralManana += monto;
-    if(m.categoria === "Central" && m.turno === "tarde") resumen[m.dia].centralTarde += monto;
+    function render(data) {
+      const movsFiltrados = filtrarPorFecha(todosLosMovimientos);
+      mostrarTablaIngresos(movsFiltrados);
 
-    if(m.categoria === "Sucursal" && m.turno === "mañana") resumen[m.dia].sucursalManana += monto;
-    if(m.categoria === "Sucursal" && m.turno === "tarde") resumen[m.dia].sucursalTarde += monto;
+      const diasIng = Object.entries(data.ingresosDia).sort(([a],[b]) => a.localeCompare(b));
+      const totalIngreso = diasIng.reduce((acc, [,v]) => acc + v, 0);
+      const promedio = diasIng.length ? totalIngreso / diasIng.length : 0;
+      const mejor = diasIng.reduce((a,b) => b[1] > a[1] ? b : a, ["-",0]);
+      const peor = diasIng.reduce((a,b) => b[1] < a[1] ? b : a, ["-",Infinity]);
 
-    if(m.categoria === "Reparto" && m.turno === "mañana") resumen[m.dia].repartoManana += monto;
-    if(m.categoria === "Reparto" && m.turno === "tarde") resumen[m.dia].repartoTarde += monto;
+      document.getElementById("metricasIngresos").innerHTML = `
+        <div class="metrica"><small>Ingresos por día</small><strong>${diasIng.length}</strong></div>
+        <div class="metrica"><small>Mejor día</small><strong>${mejor[0]} · $${f(mejor[1])}</strong></div>
+        <div class="metrica"><small>Promedio diario</small><strong>$${f(promedio)}</strong></div>
+        <div class="metrica"><small>Peor día</small><strong>${peor[1]===Infinity ? "-" : `${peor[0]} · $${f(peor[1])}`}</strong></div>`;
 
-    resumen[m.dia].total += monto;
-  });
+      const maxIng = Math.max(0, ...diasIng.map(([,v]) => v));
+      document.getElementById("graficoIngresosDia").innerHTML = diasIng.map(([d,v]) => barraHtml(d, v, maxIng)).join("");
 
-  Object.keys(resumen).sort().forEach(dia => {
-    let r = resumen[dia];
+      const meses = Object.entries(data.ingresosMes).sort(([a],[b]) => a.localeCompare(b));
+      const maxMes = Math.max(0, ...meses.map(([,v]) => v));
+      document.getElementById("graficoIngresosMes").innerHTML = meses.map(([m,v]) => barraHtml(m, v, maxMes)).join("");
 
-    tabla.innerHTML += `
-      <tr>
-        <td>${dia}</td>
-        <td>$${f(r.centralManana)}</td>
-        <td>$${f(r.centralTarde)}</td>
-        <td>$${f(r.sucursalManana)}</td>
-        <td>$${f(r.sucursalTarde)}</td>
-        <td>$${f(r.repartoManana)}</td>
-        <td>$${f(r.repartoTarde)}</td>
-        <td><strong>$${f(r.total)}</strong></td>
-      </tr>
-    `;
-  });
-}
+      const cat = Object.entries(data.gastosCat).sort((a,b) => b[1] - a[1]);
+      const maxCat = Math.max(0, ...cat.map(([,v]) => v));
+      document.getElementById("graficoGastos").innerHTML = cat.map(([c,v]) => barraHtml(c, v, maxCat)).join("");
 
-window.aplicarFiltro = () => {
-  fechaDesde = document.getElementById("fechaDesde").value;
-  fechaHasta = document.getElementById("fechaHasta").value;
-  render(agrupar(filtrarPorFecha(todosLosMovimientos)));
-};
+      const botones = document.getElementById("botonesGasto");
+      botones.innerHTML = cat.map(([c]) => `<button data-cat="${c}">${c}</button>`).join("");
+      botones.querySelectorAll("button").forEach(btn => {
+        btn.onclick = () => abrirDetalleGasto(btn.dataset.cat, data.detalle);
+      });
 
-window.limpiarFiltro = () => {
-  fechaDesde = "";
-  fechaHasta = "";
-  document.getElementById("fechaDesde").value = "";
-  document.getElementById("fechaHasta").value = "";
-  render(agrupar(todosLosMovimientos));
-};
+      const dias = Array.from(new Set([...Object.keys(data.ingresosDia), ...Object.keys(data.gastosDia)])).sort();
+      const ingBal = dias.map(d => [d, data.ingresosDia[d] || 0]);
+      const gasBal = dias.map(d => [d, data.gastosDia[d] || 0]);
+      const balDia = dias.map(d => [d, (data.ingresosDia[d] || 0) - (data.gastosDia[d] || 0)]);
 
-document.querySelectorAll(".tab-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const tab = btn.dataset.tab;
-    document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b === btn));
-    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-    document.getElementById(`tab-${tab}`).classList.add("active");
-  });
-});
+      document.getElementById("balanceIngresosDia").innerHTML = ingBal.map(([d,v]) => barraHtml(d, v, Math.max(...ingBal.map(([,x]) => x), 0))).join("");
+      document.getElementById("balanceGastosDia").innerHTML = gasBal.map(([d,v]) => barraHtml(d, v, Math.max(...gasBal.map(([,x]) => x), 0))).join("");
+      mostrarGraficoLineaBalance(balDia);
 
-onValue(ref(db, "finanzas"), snapshot => {
-  const datos = snapshot.val();
-  todosLosMovimientos = datos?.movimientos || [];
-  render(agrupar(filtrarPorFecha(todosLosMovimientos)));
-});
-</script>
+      let acumulado = 0;
+      const ac = balDia.map(([d,v]) => [d, acumulado += v]);
+      document.getElementById("saldoAcumulado").innerHTML = ac.map(([d,v]) => barraHtml(d, v, Math.max(...ac.map(([,x]) => Math.abs(x)), 0))).join("");
+    }
+
+    window.aplicarFiltro = () => {
+      fechaDesde = document.getElementById("fechaDesde").value;
+      fechaHasta = document.getElementById("fechaHasta").value;
+      render(agrupar(filtrarPorFecha(todosLosMovimientos)));
+    };
+
+    window.limpiarFiltro = () => {
+      fechaDesde = "";
+      fechaHasta = "";
+      document.getElementById("fechaDesde").value = "";
+      document.getElementById("fechaHasta").value = "";
+      render(agrupar(todosLosMovimientos));
+    };
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const tab = btn.dataset.tab;
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b === btn));
+        document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+        document.getElementById(`tab-${tab}`).classList.add("active");
+      });
+    });
+
+    onValue(ref(db, "finanzas"), snapshot => {
+      const datos = snapshot.val();
+      todosLosMovimientos = datos?.movimientos || [];
+      render(agrupar(filtrarPorFecha(todosLosMovimientos)));
+    });
+  </script>
 </body>
 </html>
