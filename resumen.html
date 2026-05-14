@@ -40,12 +40,28 @@
     th { background:#b7f000; padding:10px; border:1px solid #ccc; font-size:14px; }
     td { padding:10px; border:1px solid #ccc; text-align:center; font-size:14px; }
     tr:nth-child(even){ background:#f7f7f7; }
+    .btnVolver{
+  background:#b7f000;
+  border:none;
+  padding:12px 22px;
+  border-radius:10px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-bottom:20px;
+}
+
+.btnVolver:hover{
+  opacity:0.9;
+}
   </style>
 </head>
 <body>
   <main class="wrap">
     <section class="card">
       <h1>Resumen de Finanzas</h1>
+      <button onclick="volverInicio()" class="btnVolver">
+  Volver
+</button>
       <p><strong>Calendario Desde / Hasta</strong></p>
       <div class="filtros">
         <label>Desde <input type="date" id="fechaDesde"></label>
@@ -229,7 +245,9 @@
         }
       });
     }
-
+function volverInicio(){
+  window.location.href = "index.html";
+}
     function abrirDetalleGasto(categoria, detalle) {
       document.getElementById("detalleCategoria").style.display = "block";
       document.getElementById("tituloDetalle").textContent = `Detalle: ${categoria}`;
