@@ -86,7 +86,8 @@
 </header>
 
 <section class="card">
-  <h2>Resumen por día</h2>
+ <h2> INGRESOS</h2>
+<h3>Resumen por día</h3>
   <table>
     <thead>
       <tr>
@@ -105,11 +106,17 @@
 </section>
 
 <section class="card">
-  <h2>Gráfico de entrada total por día</h2>
+  <h2> Gráfico de ingresos diarios</h2>
   <div id="grafico"></div>
 </section>
 <section class="card">
-  <h2>Gastos por categoría</h2>
+  <h2>GASTOS</h2>
+<h3>Gastos por categoría</h3>
+  <section class="card">
+  <h2>⚖️ BALANCE</h2>
+  <h3>Ingreso - Gastos por día</h3>
+  <div id="graficoBalance"></div>
+</section>
   <div id="graficoGastos"></div>
 </section>
 <script type="module">
@@ -157,7 +164,24 @@ function procesarDatos(movimientos){
 
   let resumen = {};
 let gastosPorCategoria = {};
+  let balancePorDia = {};
   movimientos.forEach(mov => {
+    let diaMovimiento = mov.dia;
+
+if(!balancePorDia[diaMovimiento]){
+  balancePorDia[diaMovimiento] = {
+    ingresos: 0,
+    gastos: 0
+  };
+}
+
+if(mov.movimiento === "Ingreso"){
+  balancePorDia[diaMovimiento].ingresos += Number(mov.monto);
+}
+
+if(mov.movimiento === "Gasto"){
+  balancePorDia[diaMovimiento].gastos += Number(mov.monto);
+}
     if(mov.movimiento === "Gasto"){
   let categoriaGasto = mov.categoria;
   let montoGasto = Number(mov.monto);
@@ -201,7 +225,8 @@ let gastosPorCategoria = {};
 
 mostrarTabla(resumen);
 mostrarGrafico(resumen);
-  mostrarGraficoGastos(gastosPorCategoria);
+mostrarGraficoGastos(gastosPorCategoria);
+mostrarGraficoBalance(balancePorDia);
 }
 function filtrarPorFecha(movimientos){
 
@@ -312,7 +337,25 @@ function mostrarGrafico(resumen){
     `;
   });
 }
+function mostrarGraficoBalance(balancePorDia){
+  let grafico = document.getElementById("graficoBalance");
+  grafico.innerHTML = "";
 
+  Object.keys(balancePorDia).forEach(dia => {
+    let ingresos = balancePorDia[dia].ingresos;
+    let gastos = balancePorDia[dia].gastos;
+    let balance = ingresos - gastos;
+
+    grafico.innerHTML += `
+      <p>
+        <strong>${dia}</strong> |
+        Ingresos: $${formato(ingresos)} |
+        Gastos: $${formato(gastos)} |
+        Balance: <strong>$${formato(balance)}</strong>
+      </p>
+    `;
+  });
+}
 </script>
 
 </body>
