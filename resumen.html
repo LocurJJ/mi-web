@@ -170,6 +170,7 @@ function procesarDatos(movimientos){
   let resumen = {};
 let gastosPorCategoria = {};
   let balancePorDia = {};
+  let detalleGastos = {};
   movimientos.forEach(mov => {
     let diaMovimiento = mov.dia;
 
@@ -190,6 +191,17 @@ if(mov.movimiento === "Gasto"){
     if(mov.movimiento === "Gasto"){
   let categoriaGasto = mov.categoria;
   let montoGasto = Number(mov.monto);
+      let detalleGasto = mov.detalle;
+
+if(!detalleGastos[categoriaGasto]){
+  detalleGastos[categoriaGasto] = {};
+}
+
+if(!detalleGastos[categoriaGasto][detalleGasto]){
+  detalleGastos[categoriaGasto][detalleGasto] = 0;
+}
+
+detalleGastos[categoriaGasto][detalleGasto] += montoGasto;
 
   if(!gastosPorCategoria[categoriaGasto]){
     gastosPorCategoria[categoriaGasto] = 0;
@@ -232,6 +244,7 @@ mostrarTabla(resumen);
 mostrarGrafico(resumen);
 mostrarGraficoGastos(gastosPorCategoria);
 mostrarGraficoBalance(balancePorDia);
+  mostrarDetalleGastos(detalleGastos);
 }
 function filtrarPorFecha(movimientos){
 
@@ -359,6 +372,26 @@ function mostrarGraficoBalance(balancePorDia){
         Balance: <strong>$${formato(balance)}</strong>
       </p>
     `;
+  });
+}
+  function mostrarDetalleGastos(detalleGastos){
+  let contenedor = document.getElementById("detalleGastos");
+  contenedor.innerHTML = "";
+
+  Object.keys(detalleGastos).forEach(categoria => {
+    contenedor.innerHTML += `<h3>${categoria}</h3>`;
+
+    let detalles = detalleGastos[categoria];
+
+    Object.keys(detalles).forEach(detalle => {
+      let total = detalles[detalle];
+
+      contenedor.innerHTML += `
+        <p>
+          <strong>${detalle}</strong> — $${formato(total)}
+        </p>
+      `;
+    });
   });
 }
 </script>
