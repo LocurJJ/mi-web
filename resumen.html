@@ -221,15 +221,14 @@ tr:nth-child(even){
           <div id="balanceGastosDia"></div>
         </div>
       </div>
-      <h3>Gráfico balance diario</h3>
-      <canvas id="graficoLineaBalance"></canvas>
-      <div id="balanceDiario"></div>
+<h3>Gráfico balance diario</h3>
+<canvas id="graficoLineaBalance"></canvas>
       <h3>Gráfico caja actual / saldo acumulado</h3>
       <div id="saldoAcumulado"></div>
     </section>
   </main>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script type="module">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
@@ -282,6 +281,7 @@ function agrupar(movs) {
 }
 
 function render(data) {
+  let chartBalance = null;
   let movimientosFiltrados = filtrarPorFecha(todosLosMovimientos);
 mostrarTablaIngresos(movimientosFiltrados);
   const diasIng = Object.entries(data.ingresosDia).sort(([a],[b]) => a.localeCompare(b));
@@ -318,11 +318,49 @@ mostrarTablaIngresos(movimientosFiltrados);
 
   document.getElementById("balanceIngresosDia").innerHTML = ingBal.map(([d,v]) => barraHtml(d, v, Math.max(...ingBal.map(([,x]) => x),0))).join("");
   document.getElementById("balanceGastosDia").innerHTML = gasBal.map(([d,v]) => barraHtml(d, v, Math.max(...gasBal.map(([,x]) => x),0))).join("");
-  document.getElementById("balanceDiario").innerHTML = balDia.map(([d,v]) => barraHtml(d, v, Math.max(...balDia.map(([,x]) => Math.abs(x)),0))).join("");
+  mostrarGraficoLineaBalance(balDia);
 
   let acumulado = 0;
   const ac = balDia.map(([d,v]) => [d, acumulado += v]);
   document.getElementById("saldoAcumulado").innerHTML = ac.map(([d,v]) => barraHtml(d, v, Math.max(...ac.map(([,x]) => Math.abs(x)),0))).join("");
+}
+  function mostrarGraficoLineaBalance(balDia){
+  let canvas = document.getElementById("graficoLineaBalance");
+
+  if(!canvas) return;
+
+  let labels = balDia.map(item => item[0]);
+  let valores = balDia.map(item => item[1]);
+
+  if(chartBalance){
+    chartBalance.destroy();
+  }
+
+  chartBalance = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Balance diario",
+        data: valores,
+        tension: 0.3,
+        pointRadius: 5,
+        borderWidth: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          ticks: {
+            callback: function(value){
+              return "$" + Number(value).toLocaleString("es-AR");
+            }
+          }
+        }
+      }
+    }
+  });
 }
 
 function abrirDetalleGasto(categoria, detalle) {
