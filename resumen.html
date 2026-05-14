@@ -2,138 +2,194 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resumen - Panadería Josué</title>
-
   <style>
-    body{
-      font-family: Arial;
-      margin:0;
-      background:#f4f4f4;
-      text-align:center;
+    :root {
+      --verde: #b7f000;
+      --fondo: #f4f4f4;
+      --azul: #5f8fc4;
+      --gris: #d7d7d7;
+      --texto: #1d1d1d;
+      --blanco: #fff;
     }
 
-    header{
-      background:white;
-      padding:25px;
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: var(--fondo);
+      color: var(--texto);
     }
 
-    .card{
-      background:white;
-      margin:20px auto;
-      padding:20px;
-      width:90%;
-      max-width:900px;
-      border-radius:12px;
+    .wrap {
+      width: min(1100px, 94%);
+      margin: 24px auto 40px;
     }
 
-    table{
-      width:100%;
-      border-collapse:collapse;
-      background:white;
+    .card {
+      background: var(--blanco);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 9px rgba(0,0,0,0.06);
     }
 
-    th, td{
-      border:1px solid #ccc;
-      padding:10px;
+    h1, h2, h3, p { margin: 0 0 10px; }
+
+    .filtros {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
     }
 
-    th{
-      background:#b7f000;
+    input[type="date"], button {
+      border-radius: 8px;
+      border: 1px solid var(--gris);
+      padding: 10px 12px;
+      font-size: 15px;
     }
 
-    button{
-      padding:15px 25px;
-      font-size:18px;
-      border:none;
-      border-radius:8px;
-      cursor:pointer;
-      background:#b7f000;
-      font-weight:bold;
+    button {
+      border: none;
+      background: var(--verde);
+      cursor: pointer;
+      font-weight: 700;
     }
 
-    .barra{
-      background:#7fa0c8;
-      height:25px;
-      margin:5px 0;
-      border-radius:6px;
-      color:white;
-      text-align:left;
-      padding-left:8px;
-      line-height:25px;
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .tab-btn.active { outline: 3px solid #8bc200; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .metricas {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .metrica {
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 12px;
+      border: 1px solid #ececec;
+    }
+
+    .metrica small { color: #666; display: block; }
+    .metrica strong { font-size: 20px; }
+
+    .barra-item { margin-bottom: 10px; }
+    .barra {
+      background: var(--azul);
+      color: #fff;
+      border-radius: 8px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .subcat-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .subcat-buttons button {
+      background: #e7e7e7;
+      font-weight: 600;
+    }
+
+    .subcat-buttons button.active {
+      background: #cdd9ff;
+      outline: 2px solid #7f98ee;
+    }
+
+    .lista p {
+      margin: 6px 0;
+      text-align: left;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 14px;
     }
   </style>
 </head>
-
 <body>
+  <main class="wrap">
+    <section class="card">
+      <h1>Resumen de Finanzas</h1>
+      <p><strong>Calendario Desde / Hasta</strong></p>
+      <div class="filtros">
+        <label>Desde <input type="date" id="fechaDesde"></label>
+        <label>Hasta <input type="date" id="fechaHasta"></label>
+        <button onclick="aplicarFiltro()">Aplicar filtro</button>
+        <button onclick="limpiarFiltro()">Ver todo</button>
+      </div>
 
-<header>
-  <h1>Resumen de Finanzas</h1>
-  <a href="index.html"><button>Volver</button></a>
-  <section class="card">
-  <h2>Filtrar fechas</h2>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="ingresos">Ingresos</button>
+        <button class="tab-btn" data-tab="gastos">Gastos</button>
+        <button class="tab-btn" data-tab="balance">Balance</button>
+      </div>
+    </section>
 
-  <label>Desde</label>
-  <input type="date" id="fechaDesde">
+    <section id="tab-ingresos" class="tab-content active card">
+      <h2>Ingresos</h2>
+      <div class="metricas" id="metricasIngresos"></div>
+      <h3>Ingresos por día</h3>
+      <div id="graficoIngresosDia"></div>
+      <h3>Gráfico mensual</h3>
+      <div id="graficoIngresosMes"></div>
+    </section>
 
-  <label>Hasta</label>
-  <input type="date" id="fechaHasta">
+    <section id="tab-gastos" class="tab-content card">
+      <h2>Gastos</h2>
+      <h3>Gráfico grande por tipo de gasto</h3>
+      <div id="graficoGastos"></div>
+      <div class="subcat-buttons" id="botonesGasto"></div>
+      <div class="card" id="detalleCategoria" style="display:none; margin-top:14px;">
+        <h3 id="tituloDetalle"></h3>
+        <div class="lista" id="detalleGasto"></div>
+      </div>
+    </section>
 
-  <br><br>
+    <section id="tab-balance" class="tab-content card">
+      <h2>Balance</h2>
+      <div class="grid-2">
+        <div>
+          <h3>Gráfico ingresos por día</h3>
+          <div id="balanceIngresosDia"></div>
+        </div>
+        <div>
+          <h3>Gráfico gastos por día</h3>
+          <div id="balanceGastosDia"></div>
+        </div>
+      </div>
+      <h3>Gráfico balance diario</h3>
+      <div id="balanceDiario"></div>
+      <h3>Gráfico caja actual / saldo acumulado</h3>
+      <div id="saldoAcumulado"></div>
+    </section>
+  </main>
 
-  <button onclick="aplicarFiltro()">Aplicar filtro</button>
-  <button onclick="limpiarFiltro()">Ver todo</button>
-</section>
-</header>
-
-<section class="card">
- <h2> INGRESOS</h2>
-<h3>Resumen por día</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>Día</th>
-        <th>Central mañana</th>
-        <th>Central tarde</th>
-        <th>Sucursal mañana</th>
-        <th>Sucursal tarde</th>
-        <th>Reparto mañana</th>
-        <th>Reparto tarde</th>
-        <th>Total día</th>
-      </tr>
-    </thead>
-    <tbody id="tablaResumen"></tbody>
-  </table>
-</section>
-
-<section class="card">
-  <h2> Gráfico de ingresos diarios</h2>
-  <div id="grafico"></div>
-</section>
-<section class="card">
-  <h2>GASTOS</h2>
-  <section class="card">
-  <h2>Detalle interno de gastos</h2>
-
-  <div id="detalleGastos"></div>
-</section>
-<h3>Gastos por categoría</h3>
-  <section class="card">
-  <h2>⚖️ BALANCE</h2>
-  <h3>Ingreso - Gastos por día</h3>
-  <div id="graficoBalance"></div>
-</section>
-  <div id="graficoGastos"></div>
-</section>
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-  getDatabase,
-  ref,
-  onValue
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxUlFuZa-4AN3rdn_m2VIS2LpRkbh_Bp8",
@@ -151,250 +207,119 @@ let todosLosMovimientos = [];
 let fechaDesde = "";
 let fechaHasta = "";
 
-function formato(num){
-  return Number(num).toLocaleString("es-AR");
+const f = n => Number(n || 0).toLocaleString("es-AR");
+
+function barraHtml(label, total, max) {
+  const ancho = max > 0 ? Math.max((total / max) * 100, 2) : 0;
+  return `<div class="barra-item"><p><strong>${label}</strong> - $${f(total)}</p><div class="barra" style="width:${ancho}%">$${f(total)}</div></div>`;
 }
 
-onValue(ref(db, "finanzas"), (snapshot) => {
-  let datos = snapshot.val();
-
-  todosLosMovimientos = datos?.movimientos || [];
-
-  procesarDatos(
-    filtrarPorFecha(todosLosMovimientos)
-  );
-});
-
-function procesarDatos(movimientos){
-
-  let resumen = {};
-let gastosPorCategoria = {};
-  let balancePorDia = {};
-  let detalleGastos = {};
-  movimientos.forEach(mov => {
-    let diaMovimiento = mov.dia;
-
-if(!balancePorDia[diaMovimiento]){
-  balancePorDia[diaMovimiento] = {
-    ingresos: 0,
-    gastos: 0
-  };
+function filtrarPorFecha(movs) {
+  return movs.filter(m => (!fechaDesde || m.dia >= fechaDesde) && (!fechaHasta || m.dia <= fechaHasta));
 }
 
-if(mov.movimiento === "Ingreso"){
-  balancePorDia[diaMovimiento].ingresos += Number(mov.monto);
-}
-
-if(mov.movimiento === "Gasto"){
-  balancePorDia[diaMovimiento].gastos += Number(mov.monto);
-}
-    if(mov.movimiento === "Gasto"){
-  let categoriaGasto = mov.categoria;
-  let montoGasto = Number(mov.monto);
-      let detalleGasto = mov.detalle;
-
-if(!detalleGastos[categoriaGasto]){
-  detalleGastos[categoriaGasto] = {};
-}
-
-if(!detalleGastos[categoriaGasto][detalleGasto]){
-  detalleGastos[categoriaGasto][detalleGasto] = 0;
-}
-
-detalleGastos[categoriaGasto][detalleGasto] += montoGasto;
-
-  if(!gastosPorCategoria[categoriaGasto]){
-    gastosPorCategoria[categoriaGasto] = 0;
-  }
-
-  gastosPorCategoria[categoriaGasto] += montoGasto;
-}
-    if(mov.movimiento !== "Ingreso") return;
-
-    let dia = mov.dia;
-    let categoria = mov.categoria;
-    let turno = mov.turno;
-    let monto = Number(mov.monto);
-
-    if(!resumen[dia]){
-      resumen[dia] = {
-        centralManana: 0,
-        centralTarde: 0,
-        sucursalManana: 0,
-        sucursalTarde: 0,
-        repartoManana: 0,
-        repartoTarde: 0,
-        total: 0
-      };
+function agrupar(movs) {
+  const ingresosDia = {}, gastosDia = {}, gastosCat = {}, detalle = {}, ingresosMes = {};
+  movs.forEach(m => {
+    const dia = m.dia;
+    const monto = Number(m.monto || 0);
+    if (m.movimiento === "Ingreso") {
+      ingresosDia[dia] = (ingresosDia[dia] || 0) + monto;
+      const mes = dia.slice(0, 7);
+      ingresosMes[mes] = (ingresosMes[mes] || 0) + monto;
     }
-
-    if(categoria === "Central" && turno === "mañana") resumen[dia].centralManana += monto;
-    if(categoria === "Central" && turno === "tarde") resumen[dia].centralTarde += monto;
-
-    if(categoria === "Sucursal" && turno === "mañana") resumen[dia].sucursalManana += monto;
-    if(categoria === "Sucursal" && turno === "tarde") resumen[dia].sucursalTarde += monto;
-
-    if(categoria === "Reparto" && turno === "mañana") resumen[dia].repartoManana += monto;
-    if(categoria === "Reparto" && turno === "tarde") resumen[dia].repartoTarde += monto;
-
-    resumen[dia].total += monto;
+    if (m.movimiento === "Gasto") {
+      gastosDia[dia] = (gastosDia[dia] || 0) + monto;
+      gastosCat[m.categoria] = (gastosCat[m.categoria] || 0) + monto;
+      if (!detalle[m.categoria]) detalle[m.categoria] = {};
+      const det = m.detalle || "Sin detalle";
+      detalle[m.categoria][det] = (detalle[m.categoria][det] || 0) + monto;
+    }
   });
-
-mostrarTabla(resumen);
-mostrarGrafico(resumen);
-mostrarGraficoGastos(gastosPorCategoria);
-mostrarGraficoBalance(balancePorDia);
-  mostrarDetalleGastos(detalleGastos);
-}
-function filtrarPorFecha(movimientos){
-
-  return movimientos.filter(mov => {
-
-    if(fechaDesde && mov.dia < fechaDesde){
-      return false;
-    }
-
-    if(fechaHasta && mov.dia > fechaHasta){
-      return false;
-    }
-
-    return true;
-  });
-
+  return { ingresosDia, gastosDia, gastosCat, detalle, ingresosMes };
 }
 
-window.aplicarFiltro = function(){
+function render(data) {
+  const diasIng = Object.entries(data.ingresosDia).sort(([a],[b]) => a.localeCompare(b));
+  const totalIngreso = diasIng.reduce((acc, [,v]) => acc + v, 0);
+  const promedio = diasIng.length ? totalIngreso / diasIng.length : 0;
+  const mejor = diasIng.reduce((a,b) => b[1] > a[1] ? b : a, ["-",0]);
+  const peor = diasIng.reduce((a,b) => b[1] < a[1] ? b : a, ["-",Infinity]);
 
+  document.getElementById("metricasIngresos").innerHTML = `
+    <div class="metrica"><small>Ingresos por día</small><strong>${diasIng.length}</strong></div>
+    <div class="metrica"><small>Mejor día</small><strong>${mejor[0]} · $${f(mejor[1])}</strong></div>
+    <div class="metrica"><small>Promedio diario</small><strong>$${f(promedio)}</strong></div>
+    <div class="metrica"><small>Peor día</small><strong>${peor[1]===Infinity?"-":`${peor[0]} · $${f(peor[1])}`}</strong></div>`;
+
+  const maxIng = Math.max(0, ...diasIng.map(([,v]) => v));
+  document.getElementById("graficoIngresosDia").innerHTML = diasIng.map(([d,v]) => barraHtml(d, v, maxIng)).join("");
+
+  const meses = Object.entries(data.ingresosMes).sort(([a],[b]) => a.localeCompare(b));
+  const maxMes = Math.max(0, ...meses.map(([,v]) => v));
+  document.getElementById("graficoIngresosMes").innerHTML = meses.map(([m,v]) => barraHtml(m, v, maxMes)).join("");
+
+  const cat = Object.entries(data.gastosCat).sort((a,b) => b[1]-a[1]);
+  const maxCat = Math.max(0, ...cat.map(([,v]) => v));
+  document.getElementById("graficoGastos").innerHTML = cat.map(([c,v]) => barraHtml(c, v, maxCat)).join("");
+
+  const botones = document.getElementById("botonesGasto");
+  botones.innerHTML = cat.map(([c]) => `<button data-cat="${c}">${c}</button>`).join("");
+  botones.querySelectorAll("button").forEach(btn => btn.onclick = () => abrirDetalleGasto(btn.dataset.cat, data.detalle));
+
+  const dias = Array.from(new Set([...Object.keys(data.ingresosDia), ...Object.keys(data.gastosDia)])).sort();
+  const ingBal = dias.map(d => [d, data.ingresosDia[d] || 0]);
+  const gasBal = dias.map(d => [d, data.gastosDia[d] || 0]);
+  const balDia = dias.map(d => [d, (data.ingresosDia[d] || 0) - (data.gastosDia[d] || 0)]);
+
+  document.getElementById("balanceIngresosDia").innerHTML = ingBal.map(([d,v]) => barraHtml(d, v, Math.max(...ingBal.map(([,x]) => x),0))).join("");
+  document.getElementById("balanceGastosDia").innerHTML = gasBal.map(([d,v]) => barraHtml(d, v, Math.max(...gasBal.map(([,x]) => x),0))).join("");
+  document.getElementById("balanceDiario").innerHTML = balDia.map(([d,v]) => barraHtml(d, v, Math.max(...balDia.map(([,x]) => Math.abs(x)),0))).join("");
+
+  let acumulado = 0;
+  const ac = balDia.map(([d,v]) => [d, acumulado += v]);
+  document.getElementById("saldoAcumulado").innerHTML = ac.map(([d,v]) => barraHtml(d, v, Math.max(...ac.map(([,x]) => Math.abs(x)),0))).join("");
+}
+
+function abrirDetalleGasto(categoria, detalle) {
+  document.getElementById("detalleCategoria").style.display = "block";
+  document.getElementById("tituloDetalle").textContent = `Detalle: ${categoria}`;
+  document.getElementById("detalleGasto").innerHTML = Object.entries(detalle[categoria] || {})
+    .sort((a,b) => b[1]-a[1])
+    .map(([k,v]) => `<p><strong>${k}</strong> — $${f(v)}</p>`)
+    .join("");
+
+  document.querySelectorAll("#botonesGasto button").forEach(b => b.classList.toggle("active", b.dataset.cat === categoria));
+}
+
+window.aplicarFiltro = () => {
   fechaDesde = document.getElementById("fechaDesde").value;
   fechaHasta = document.getElementById("fechaHasta").value;
+  render(agrupar(filtrarPorFecha(todosLosMovimientos)));
+};
 
-  procesarDatos(
-    filtrarPorFecha(todosLosMovimientos)
-  );
-
-}
-
-window.limpiarFiltro = function(){
-
+window.limpiarFiltro = () => {
   fechaDesde = "";
   fechaHasta = "";
-
   document.getElementById("fechaDesde").value = "";
   document.getElementById("fechaHasta").value = "";
+  render(agrupar(todosLosMovimientos));
+};
 
-  procesarDatos(todosLosMovimientos);
-
-}
-function mostrarTabla(resumen){
-  let tabla = document.getElementById("tablaResumen");
-  tabla.innerHTML = "";
-
-  Object.keys(resumen).forEach(dia => {
-    let r = resumen[dia];
-
-    tabla.innerHTML += `
-      <tr>
-        <td>${dia}</td>
-        <td>$${formato(r.centralManana)}</td>
-        <td>$${formato(r.centralTarde)}</td>
-        <td>$${formato(r.sucursalManana)}</td>
-        <td>$${formato(r.sucursalTarde)}</td>
-        <td>$${formato(r.repartoManana)}</td>
-        <td>$${formato(r.repartoTarde)}</td>
-        <td><strong>$${formato(r.total)}</strong></td>
-      </tr>
-    `;
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const tab = btn.dataset.tab;
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b === btn));
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+    document.getElementById(`tab-${tab}`).classList.add("active");
   });
-}
-  function mostrarGraficoGastos(gastosPorCategoria){
-  let grafico = document.getElementById("graficoGastos");
-  grafico.innerHTML = "";
+});
 
-  let maximo = 0;
-
-  Object.keys(gastosPorCategoria).forEach(categoria => {
-    if(gastosPorCategoria[categoria] > maximo){
-      maximo = gastosPorCategoria[categoria];
-    }
-  });
-
-  Object.keys(gastosPorCategoria).forEach(categoria => {
-    let total = gastosPorCategoria[categoria];
-    let ancho = maximo > 0 ? (total / maximo) * 100 : 0;
-
-    grafico.innerHTML += `
-      <p><strong>${categoria}</strong> - $${formato(total)}</p>
-      <div class="barra" style="width:${ancho}%;">
-        $${formato(total)}
-      </div>
-    `;
-  });
-}
-
-function mostrarGrafico(resumen){
-  let grafico = document.getElementById("grafico");
-  grafico.innerHTML = "";
-
-  let maximo = 0;
-
-  Object.keys(resumen).forEach(dia => {
-    if(resumen[dia].total > maximo){
-      maximo = resumen[dia].total;
-    }
-  });
-
-  Object.keys(resumen).forEach(dia => {
-    let total = resumen[dia].total;
-    let ancho = maximo > 0 ? (total / maximo) * 100 : 0;
-
-    grafico.innerHTML += `
-      <p><strong>${dia}</strong> - $${formato(total)}</p>
-      <div class="barra" style="width:${ancho}%;">
-        $${formato(total)}
-      </div>
-    `;
-  });
-}
-function mostrarGraficoBalance(balancePorDia){
-  let grafico = document.getElementById("graficoBalance");
-  grafico.innerHTML = "";
-
-  Object.keys(balancePorDia).forEach(dia => {
-    let ingresos = balancePorDia[dia].ingresos;
-    let gastos = balancePorDia[dia].gastos;
-    let balance = ingresos - gastos;
-
-    grafico.innerHTML += `
-      <p>
-        <strong>${dia}</strong> |
-        Ingresos: $${formato(ingresos)} |
-        Gastos: $${formato(gastos)} |
-        Balance: <strong>$${formato(balance)}</strong>
-      </p>
-    `;
-  });
-}
-  function mostrarDetalleGastos(detalleGastos){
-  let contenedor = document.getElementById("detalleGastos");
-  contenedor.innerHTML = "";
-
-  Object.keys(detalleGastos).forEach(categoria => {
-    contenedor.innerHTML += `<h3>${categoria}</h3>`;
-
-    let detalles = detalleGastos[categoria];
-
-    Object.keys(detalles).forEach(detalle => {
-      let total = detalles[detalle];
-
-      contenedor.innerHTML += `
-        <p>
-          <strong>${detalle}</strong> — $${formato(total)}
-        </p>
-      `;
-    });
-  });
-}
+onValue(ref(db, "finanzas"), snapshot => {
+  const datos = snapshot.val();
+  todosLosMovimientos = datos?.movimientos || [];
+  render(agrupar(filtrarPorFecha(todosLosMovimientos)));
+});
 </script>
-
 </body>
 </html>
